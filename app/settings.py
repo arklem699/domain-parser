@@ -56,6 +56,10 @@ CORS_ALLOWED_ORIGINS = [
     "https://domainparser-k7twijfn.b4a.run"
 ]
 
+CSRF_TRUSTED_ORIGINS = [
+    "https://domainparser-k7twijfn.b4a.run"
+]
+
 ROOT_URLCONF = 'app.urls'
 
 TEMPLATES = [
