@@ -16,7 +16,7 @@ WHOIS Server: whois.nic.ru
    Name Server: NS4.VK.COM
    DNSSEC: unsigned
    URL of the ICANN Whois Inaccuracy Complaint Form: https://www.icann.org/wicf/
->>> Last update of whois database: 2024-02-24T20:43:22Z <<<
+>>> Last update of whois database: 2024-02-25T20:01:12Z <<<
 
 For more information on Whois status codes, please visit https://icann.org/epp
 
@@ -106,7 +106,7 @@ Name Server: ns4.vk.com 87.240.136.136
 DNSSEC: unsigned
 URL of the ICANN WHOIS Data Problem Reporting System: http://wdprs.internic.net/
 For more information on Whois status codes, please visit: https://icann.org/epp
->>> Last update of WHOIS database: 2024.02.24T23:43:20Z <<<
+>>> Last update of WHOIS database: 2024.02.25T23:01:02Z <<<
 
 
 
@@ -162,6 +162,6 @@ Name Server: ns4.vk.com 87.240.136.136
 DNSSEC: unsigned
 URL of the ICANN WHOIS Data Problem Reporting System: http://wdprs.internic.net/
 For more information on Whois status codes, please visit: https://icann.org/epp
->>> Last update of WHOIS database: 2024.02.24T23:43:20Z <<<
+>>> Last update of WHOIS database: 2024.02.25T23:01:02Z <<<
 
 
