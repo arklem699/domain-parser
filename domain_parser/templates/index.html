@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="en" class="h-100">
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" href="../static/styles.css">
+    <title>Парсер доменов</title>
+</head>
+<body>
+    <h1>Парсер доменов</h1>
+    <form name="download" action="/download/" method="post">
+        {% csrf_token %}
+        <label>Введите список доменов столбцом:</label>
+        <textarea name="domain_list" placeholder="Введите список..." rows="10" cols="33" autofocus required></textarea>
+        <button type="submit"><span>Скачать файл</span></button>
+    </form>
+</body>
+</html>
