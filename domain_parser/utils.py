@@ -1,4 +1,4 @@
-import os
+import subprocess
 import re
 import xlsxwriter
 import datetime
@@ -6,50 +6,55 @@ import datetime
 
 # Получение дат окончания регистрации доменов и составление списка словарей
 def data_domains(domains, data):
+
     for domain in domains:
-        resp = os.system('whois '+ domain +  ' > test_whois.txt')
 
-        if resp == 0:
+        try:
+            # Вызов команды whois
+            process = subprocess.Popen(['whois', domain], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            output, error = process.communicate()
 
-            try:
-                with open('test_whois.txt') as file:
-                    text_file = file.read()
+            if process.returncode == 0:
+                text_file = output.decode('utf-8')
 
-                    # Парсим у доменов Registry Expiry Date. Если достали значит домен занят
-                    try:
-                        registry_expiry_date = re.findall( r'Registry Expiry Date:\s+(.*)\n|Expires:\s+(.*)|Expiry date:\s+(.*)|expire:\s+(.*)|Registrar Registration Expiration Date:\s+(.*)', text_file )[0]
+                # Парсим у доменов Registry Expiry Date. Если достали значит домен занят
+                try:
+                    registry_expiry_date = re.findall( r'Registry Expiry Date:\s+(.*)\n|Expires:\s+(.*)|Expiry date:\s+(.*)|expire:\s+(.*)|Registrar Registration Expiration Date:\s+(.*)', text_file )[0]
 
-                        # Парсим Expires несколькими регулярками. Выбираем один вариант
-                        for item in registry_expiry_date:
-                            if len(item) != 0:
-                                registry_expiry_date = item
-                                break
-                        
-                        # Приводим дату в нормальный формат
-                        date_obj = datetime.datetime.strptime(registry_expiry_date, '%Y-%m-%dT%H:%M:%SZ')
-                        date_expiry = date_obj.strftime('%d.%m.%Y')
-                        print(domain, date_expiry)
+                    # Парсим Expires несколькими регулярками. Выбираем один вариант
+                    for item in registry_expiry_date:
+                        if len(item) != 0:
+                            registry_expiry_date = item.strip()
+                            break
+                    
+                    # Приводим дату в нормальный формат
+                    date_obj = datetime.datetime.strptime(registry_expiry_date, '%Y-%m-%dT%H:%M:%SZ')
+                    date_expiry = date_obj.strftime('%d.%m.%Y')
+                    print(domain, date_expiry)
 
-                        item = {
-                            'domain': domain,
-                            'date_expiry': date_expiry
-                        }
+                    item = {
+                        'domain': domain,
+                        'date_expiry': date_expiry
+                    }
 
-                        data.append(item)
+                    data.append(item)
 
-                    # Если registry_expiry_date распарсить не получилось, домен скорее всего свободен
-                    except Exception as e:
-                        print(domain, e)
+                # Если registry_expiry_date распарсить не получилось, домен скорее всего свободен
+                except Exception as e:
+                    print(domain, e)
 
-                        item = {
-                            'domain': domain,
-                            'date_expiry': 'Узнать дату окончания не получилось (Вероятно домен свободен)'
-                        }
+                    item = {
+                        'domain': domain,
+                        'date_expiry': 'Узнать дату окончания не получилось (Вероятно домен свободен)'
+                    }
 
-                        data.append(item)
+                    data.append(item)
 
-            except Exception as e:
-                print(domain, e)
+            else:
+                print(domain, error.decode('utf-8'))
+
+        except Exception as e:
+            print(domain, e)
 
 
 # Запись полученных данных в excel
