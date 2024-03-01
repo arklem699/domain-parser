@@ -1,17 +1,69 @@
 <!doctype html>
-<html lang="en" class="h-100">
+<html lang="en">
 <head>
     <meta charset="utf-8">
-    <link rel="stylesheet" type="text/css" href="../static/styles.css">
     <title>Парсер доменов</title>
+    <link rel="stylesheet" type="text/css" href="../static/styles.css">
 </head>
 <body>
     <h1>Парсер доменов</h1>
-    <form name="download" action="/download/" method="post">
+    <form id="downloadForm" action="/download/" method="post">
         {% csrf_token %}
         <label>Введите список доменов столбцом:</label>
         <textarea name="domain_list" placeholder="Введите список..." rows="10" cols="33" autofocus required></textarea>
-        <button type="submit"><span>Скачать файл</span></button>
+        <button type="submit" id="downloadButton"><span>Скачать файл</span><div class="loader" id="loader"></div></button>
     </form>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('downloadForm').addEventListener('submit', function(e) {
+
+                 // Отменяем стандартное поведение формы
+                e.preventDefault();
+
+                // Показываем элемент загрузки
+                document.getElementById('loader').style.display = 'block';
+                // Скрываем текст на кнопке
+                document.getElementById('downloadButton').querySelector('span').style.display = 'none';
+
+                // Устанавливаем параметры запроса
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST', this.getAttribute('action'), true);
+                xhr.responseType = 'blob'; // Устанавливаем тип ответа на Blob
+
+                // Обработчик ответа
+                xhr.onload = function() {
+                    if (this.status === 200) {
+                        // Скрываем элемент загрузки после успешной загрузки
+                        document.getElementById('loader').style.display = 'none';
+                        // Показываем текст на кнопке
+                        document.getElementById('downloadButton').querySelector('span').style.display = 'block';
+
+                        // Создание ссылки для скачивания
+                        var blob = this.response;
+                        var url = window.URL.createObjectURL(blob);
+                        var a = document.createElement('a');
+                        a.href = url;
+                        a.download = 'domain_expiry_date.xlsx';
+                        document.body.appendChild(a);
+                        a.click();
+                        window.URL.revokeObjectURL(url);
+                        document.body.removeChild(a);
+                    } else {
+                        console.log('Ошибка при выполнении запроса:', this.status);
+                    }
+                };
+
+                // Обработчик ошибок
+                xhr.onerror = function() {
+                    console.log('Ошибка при выполнении запроса:', this.status);
+                };
+
+                // Отправка формы
+                var formData = new FormData(this);
+                xhr.send(formData);
+            });
+        });
+    </script>
 </body>
 </html>
