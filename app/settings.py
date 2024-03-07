@@ -11,6 +11,11 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 from pathlib import Path
+import os
+import mimetypes
+
+
+mimetypes.add_type("text/css", ".css", True)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,10 +25,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-gxw^00^5p6(kpj#va@w!4v(pznr=hzvtt(qti+9(fi&1!gb)0r'
+# SECRET_KEY = 'django-insecure-gxw^00^5p6(kpj#va@w!4v(pznr=hzvtt(qti+9(fi&1!gb)0r'
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'django-insecure-gxw^00^5p6(kpj#va@w!4v(pznr=hzvtt(qti+9(fi&1!gb)0r')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# DEBUG = True
+DEBUG = bool( os.environ.get('DJANGO_DEBUG', True) )
 
 ALLOWED_HOSTS = ['*']
 
@@ -43,6 +50,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     'django.contrib.sessions.middleware.SessionMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -53,11 +61,11 @@ MIDDLEWARE = [
 ]
 
 CORS_ALLOWED_ORIGINS = [
-    "https://domainparser-k7twijfn.b4a.run"
+    "http://89.223.127.88:8085"
 ]
 
 CSRF_TRUSTED_ORIGINS = [
-    "https://domainparser-k7twijfn.b4a.run"
+    "http://89.223.127.88:8085"
 ]
 
 ROOT_URLCONF = 'app.urls'
@@ -127,6 +135,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
 STATIC_URL = 'static/'
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
