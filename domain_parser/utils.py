@@ -11,7 +11,7 @@ def data_domains(domains, data):
 
         try:
             # Вызов команды whois
-            process = subprocess.Popen(['whois', domain], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            process = subprocess.Popen(['C:/Users/Administrator/Downloads/WhoIs/whois', domain], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             output, error = process.communicate()
 
             if process.returncode == 0:
@@ -28,7 +28,14 @@ def data_domains(domains, data):
                             break
                     
                     # Приводим дату в нормальный формат
-                    date_obj = datetime.datetime.strptime(registry_expiry_date, '%Y-%m-%dT%H:%M:%SZ')
+                    try:
+                        date_obj = datetime.datetime.strptime(registry_expiry_date, '%Y-%m-%dT%H:%M:%SZ')
+                    except:
+                        try:
+                            date_obj = datetime.datetime.strptime(registry_expiry_date, '%d-%b-%Y')
+                        except:
+                            print(domain, registry_expiry_date)
+                            
                     date_expiry = date_obj.strftime('%d.%m.%Y')
                     print(domain, date_expiry)
 
